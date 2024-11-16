@@ -89,6 +89,7 @@ struct MainView: View {
                                    title = ""
                                }
                            }
+                    
                 }
                 ToolbarItem(id: "DeleteAll",
                             placement: .navigationBarLeading) {
