@@ -15,9 +15,7 @@ struct TestView: View {
             VStack(spacing: 5) {
                 // ObservedObject 섹션
                 VStack {
-                    Text("ObservedObject - API 조회")
-                        .font(.headline)
-                    ApiDataSubview(cartViewModel: cartViewModel)
+                    ApiToggleSubview(useStateObject: false, cartViewModel: cartViewModel)
                         .frame(height: 180)
                 }
                 .padding()
@@ -26,9 +24,7 @@ struct TestView: View {
 
                 // StateObject 섹션
                 VStack {
-                    Text("StateObject - API 조회")
-                        .font(.headline)
-                    ApiStateSubview(cartViewModel: cartViewModel)
+                    ApiToggleSubview(useStateObject: true, cartViewModel: cartViewModel)
                         .frame(height: 180)
                 }
                 .padding()
@@ -43,7 +39,7 @@ struct TestView: View {
                     List(cartViewModel.cart, id: \.self) { item in
                         Text(item.title ?? "No Title")
                     }
-                    .frame(height: 80)
+                    .frame(height: 150)
 
                     Button("장바구니 초기화") {
                         cartViewModel.deleteAllData()
@@ -57,6 +53,6 @@ struct TestView: View {
             }
             .padding()
         }
-        .navigationBarHidden(true) // NavigationBar 완전히 숨기기
+        .navigationBarHidden(true)
     }
 }
