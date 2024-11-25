@@ -18,7 +18,6 @@ class APIRequestService {
     }
     
     func requestAPI<T: Codable> (searchText: String) async -> T? {
-        
         let urlString = "https://dapi.kakao.com/v3/search/book?target=title"
         let headers = ["Authorization" : "KakaoAK \(Secret().apiKey)"]
         var urlComponent = URLComponents(string: urlString)
