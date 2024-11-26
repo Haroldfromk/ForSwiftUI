@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @StateObject var apiViewModel = APIViewModel()
     @StateObject var markViewModel = MarkViewModel()
+    @StateObject var recentViewModel = RecentViewModel()
     
     var body: some View {
         TabView {
@@ -17,6 +18,7 @@ struct ContentView: View {
                 MainView()
                     .environmentObject(apiViewModel)
                     .environmentObject(markViewModel)
+                    .environmentObject(recentViewModel)
             }
             Tab("담은 책 리스트", systemImage: "list.bullet.clipboard") {
                 MarkListView()

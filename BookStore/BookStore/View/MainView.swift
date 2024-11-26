@@ -11,7 +11,8 @@ struct MainView: View {
     @State var searchText: String = ""
     @EnvironmentObject var markViewModel: MarkViewModel
     @EnvironmentObject var apiViewModel: APIViewModel
-    
+    @EnvironmentObject var recentViewModel: RecentViewModel
+
     var body: some View {
         NavigationStack {
             VStack {
@@ -19,13 +20,16 @@ struct MainView: View {
                     Text("최근 본 책")
                         .font(.system(size: 25))
                         .fontWeight(.bold)
-                    ScrollView {
-                        //                            LazyHGrid(rows: [GridItem]) {
-                        //
-                        //                            }
+                    ScrollView(.horizontal) {
+                        let gridItem = [GridItem(.fixed(120))]
+                        LazyHGrid(rows: gridItem) {
+                            ForEach(recentViewModel.recentBooks) { book in
+                                GridView(imageURL: book.thumbnail ?? "", title: book.title ?? "")
+                            }
+                        }
                     }
                     .scrollIndicators(.automatic)
-                    .frame(height: UIScreen.main.bounds.width * 0.35)
+                    .frame(height: UIScreen.main.bounds.width * 0.43)
                 }
                 .padding(.horizontal, 20)
                 VStack(alignment: .leading) {
@@ -37,6 +41,7 @@ struct MainView: View {
                             NavigationLink {
                                 DetailView(isFromMain: true, book: book)
                                     .environmentObject(markViewModel)
+                                    .environmentObject(recentViewModel)
                             } label: {
                                 ResultListCell(title: book.title,
                                                author: book.authors.joined(separator: ", "),

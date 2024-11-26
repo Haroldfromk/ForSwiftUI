@@ -10,6 +10,7 @@ import SwiftUI
 struct DetailView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var markViewModel: MarkViewModel
+    @EnvironmentObject var recentViewModel: RecentViewModel
     @State var showAlert: Bool = false
     @State var activeAlert: AlertType = .isDuplicated
     
@@ -111,5 +112,10 @@ struct DetailView: View {
             }
         }
         .navigationBarBackButtonHidden()
+        .onAppear {
+            if let book = book, !recentViewModel.checkDuplicate(object: book) {
+                recentViewModel.addRecent(object: book)
+            }
+        }
     }
 }
