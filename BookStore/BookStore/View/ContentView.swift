@@ -9,15 +9,18 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject var apiViewModel = APIViewModel()
+    @StateObject var markViewModel = MarkViewModel()
     
     var body: some View {
         TabView {
             Tab("검색", systemImage: "magnifyingglass") {
                 MainView()
                     .environmentObject(apiViewModel)
+                    .environmentObject(markViewModel)
             }
             Tab("담은 책 리스트", systemImage: "list.bullet.clipboard") {
-                SavedListView()
+                MarkListView()
+                    .environmentObject(markViewModel)
             }
         }
     }

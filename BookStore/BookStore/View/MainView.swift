@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MainView: View {
     @State var searchText: String = ""
+    @EnvironmentObject var markViewModel: MarkViewModel
     @EnvironmentObject var apiViewModel: APIViewModel
     
     var body: some View {
@@ -18,13 +19,12 @@ struct MainView: View {
                     Text("최근 본 책")
                         .font(.system(size: 25))
                         .fontWeight(.bold)
-                    HStack {
-                        ScrollView {
-//                            LazyHGrid(rows: [GridItem]) {
-//                                
-//                            }
-                        }
+                    ScrollView {
+                        //                            LazyHGrid(rows: [GridItem]) {
+                        //
+                        //                            }
                     }
+                    .scrollIndicators(.automatic)
                     .frame(height: UIScreen.main.bounds.width * 0.35)
                 }
                 .padding(.horizontal, 20)
@@ -34,9 +34,14 @@ struct MainView: View {
                         .fontWeight(.bold)
                     List {
                         ForEach(apiViewModel.books) { book in
-                           ResultListCell(title: book.title,
-                                          author: book.authors.joined(separator: " "),
-                                          price: book.price)
+                            NavigationLink {
+                                DetailView(isFromMain: true, book: book)
+                                    .environmentObject(markViewModel)
+                            } label: {
+                                ResultListCell(title: book.title,
+                                               author: book.authors.joined(separator: ", "),
+                                               price: book.price)
+                            }
                         }
                     }
                 }
@@ -51,6 +56,7 @@ struct MainView: View {
         }
         .onDisappear {
             apiViewModel.books.removeAll()
+            searchText = ""
         }
     }
 }

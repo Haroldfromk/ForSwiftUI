@@ -15,6 +15,7 @@ struct BookModel: Codable {
 // MARK: - Document
 struct Document: Codable, Identifiable {
     let id = UUID()
+    //let id: UUID
     let authors: [String]
     let contents: String
     let price: Int

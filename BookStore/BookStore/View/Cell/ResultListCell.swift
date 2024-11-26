@@ -16,13 +16,12 @@ struct ResultListCell: View {
         HStack {
             Text(title)
                 .font(.system(size: 13))
-                .lineLimit(0)
             Spacer()
             Text(author)
-                .font(.system(size: 8))
+                .font(.system(size: 11))
             Spacer()
             Text(price.toString())
-                .font(.system(size: 10))
+                .font(.system(size: 13))
         }
     }
 }
