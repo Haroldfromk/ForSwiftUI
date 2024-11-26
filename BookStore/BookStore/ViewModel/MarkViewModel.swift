@@ -13,7 +13,7 @@ class MarkViewModel: ObservableObject {
     @Published var book = [MarkedBookModel]()
     
     private let modelContainer: ModelContainer
-    private let modelContext: ModelContext
+    let modelContext: ModelContext
     
     init() {
 //        let fileManager = FileManager.default
@@ -21,11 +21,16 @@ class MarkViewModel: ObservableObject {
 //            let storeURL = containerURL.appendingPathComponent("Model.sqlite")
 //            print(storeURL)
 //        }
-//       
-        self.modelContainer = try! ModelContainer(for: MarkedBookModel.self,
-                                                  configurations: ModelConfiguration(isStoredInMemoryOnly: false))
-        self.modelContext = modelContainer.mainContext
-        fetchRequest()
+//
+        do {
+            self.modelContainer = try ModelContainer(for: MarkedBookModel.self)
+            self.modelContext = modelContainer.mainContext
+            self.modelContext.undoManager = UndoManager()
+            fetchRequest()
+        } catch {
+            fatalError()
+        }
+        
     }
     
     // Read
@@ -86,8 +91,15 @@ class MarkViewModel: ObservableObject {
     }
     
     // Undo
+    func undoAction() {
+        modelContext.undoManager!.undo()
+        saveContext()
+    }
     
     // Redo
-    
+    func redoAction() {
+        modelContext.undoManager!.redo()
+        saveContext()
+    }
 
 }

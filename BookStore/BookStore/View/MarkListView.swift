@@ -53,6 +53,22 @@ struct MarkListView: View {
                         Text("전체 삭제")
                     }
                 }
+                ToolbarItem(placement: .topBarTrailing) {
+                    HStack {
+                        Button {
+                            viewModel.undoAction()
+                        } label: {
+                            Image(systemName: "arrow.uturn.backward")
+                        }
+                        .disabled(viewModel.modelContext.undoManager!.canUndo == false)
+                        Button {
+                            viewModel.redoAction()
+                        } label: {
+                            Image(systemName: "arrow.uturn.forward")
+                        }
+                        .disabled(viewModel.modelContext.undoManager!.canRedo == false)
+                    }
+                }
             }
             .alert(isPresented: $showAlert) {
                 switch alertState {
@@ -75,7 +91,6 @@ struct MarkListView: View {
                 case .isEmpty:
                     return Alert(title: Text("안내"), message: Text("담은 책이 없습니다."))
                 }
-                
             }
         }
         .onAppear {
