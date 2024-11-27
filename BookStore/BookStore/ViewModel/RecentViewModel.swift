@@ -73,4 +73,16 @@ class RecentViewModel: ObservableObject {
             return false
         }
     }
+    
+    func deleteAll() {
+        let request: NSFetchRequest<NSFetchRequestResult> = RecentBook.fetchRequest()
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: request)
+        
+        do {
+            try context.execute(deleteRequest)
+            saveRecent()
+        } catch {
+            fatalError()
+        }
+    }
 }

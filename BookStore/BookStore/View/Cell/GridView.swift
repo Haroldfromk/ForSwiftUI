@@ -22,6 +22,7 @@ struct GridView: View {
             .frame(width: 120, height: 120)
             Text(title)
                 .font(.system(size: 15))
+                .foregroundStyle(.black)
         }
         .border(Color.black, width: 1)
         .frame(width: 120, height: 20)
