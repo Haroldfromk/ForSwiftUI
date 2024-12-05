@@ -68,6 +68,7 @@ struct MonthlyWidgetEntryView : View {
                         .fontWeight(.bold)
                         .minimumScaleFactor(0.6)
                         .foregroundStyle(showsBackground ? config.weekdayTextColor : .white)
+                        .widgetAccentable()
                     Spacer()
                 }
                 .id(entry.date)
