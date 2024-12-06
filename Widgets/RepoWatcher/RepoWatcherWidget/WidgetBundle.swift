@@ -12,7 +12,7 @@ import SwiftUI
 @main
 struct RepoWatcherWidgets: WidgetBundle {
     var body: some Widget {
-        CompactRepoWidget()
-        ContributorWidget()
+        SingleRepoWidget()
+        DoubleRepoWidget()
     }
 }

@@ -7,39 +7,37 @@
 
 import WidgetKit
 import SwiftUI
+import AppIntents
 
 struct Provider: AppIntentTimelineProvider {
+    
     func placeholder(in context: Context) -> DayEntry {
-        DayEntry(date: Date(), configuration: ConfigurationAppIntent())
+        DayEntry(date: Date(), showFunFont: false)
     }
     
-    func snapshot(for configuration: ConfigurationAppIntent, in context: Context) async -> DayEntry {
-        DayEntry(date: Date(), configuration: configuration)
+    func snapshot(for configuration: ChangeFontIntent, in context: Context) async -> DayEntry {
+        return DayEntry(date: Date(), showFunFont: false)
     }
     
-    func timeline(for configuration: ConfigurationAppIntent, in context: Context) async -> Timeline<DayEntry> {
+    func timeline(for configuration: ChangeFontIntent, in context: Context) async -> Timeline<DayEntry> {
         var entries: [DayEntry] = []
+        let showFunFont = configuration.funFont ?? false
         
-        // Generate a timeline consisting of seven entries an hour apart, starting from the current date.
         let currentDate = Date()
         for dayOffset in 0 ..< 7 {
             let entryDate = Calendar.current.date(byAdding: .day, value: dayOffset, to: currentDate)!
             let startOfDate = Calendar.current.startOfDay(for: entryDate)
-            let entry = DayEntry(date: startOfDate, configuration: configuration)
+            let entry = DayEntry(date: startOfDate, showFunFont: showFunFont)
             entries.append(entry)
         }
-        
         return Timeline(entries: entries, policy: .atEnd)
     }
     
-    //    func relevances() async -> WidgetRelevances<ConfigurationAppIntent> {
-    //        // Generate a list containing the contexts this widget is relevant in.
-    //    }
 }
 
 struct DayEntry: TimelineEntry {
     let date: Date
-    let configuration: ConfigurationAppIntent
+    let showFunFont: Bool
 }
 
 struct MonthlyWidgetEntryView : View {
@@ -48,6 +46,7 @@ struct MonthlyWidgetEntryView : View {
     
     var entry: DayEntry
     var config: MonthConfig
+    let funFontName = "Chalkduster"
     
     init(entry: DayEntry) {
         self.entry = entry
@@ -64,7 +63,7 @@ struct MonthlyWidgetEntryView : View {
                         .compositingGroup()
                         .luminanceToAlpha()
                     Text(entry.date.weekDayDisplayFormat)
-                        .font(.title3)
+                        .font(entry.showFunFont ? .custom(funFontName, size: 24) : .title3)
                         .fontWeight(.bold)
                         .minimumScaleFactor(0.6)
                         .foregroundStyle(showsBackground ? config.weekdayTextColor : .white)
@@ -76,7 +75,7 @@ struct MonthlyWidgetEntryView : View {
                 .animation(.bouncy, value: entry.date)
                 
                 Text(entry.date.dayDisplayFormat)
-                    .font(.system(size: 80, weight: .heavy))
+                    .font(entry.showFunFont ? .custom(funFontName, size: 80) : .system(size: 80, weight: .heavy))
                     .foregroundStyle(showsBackground ? config.dayTextColor : .white)
                     .contentTransition(.numericText())
                     .widgetAccentable()
@@ -94,31 +93,15 @@ struct MonthlyWidget: Widget {
     let kind: String = "MonthlyWidget"
     
     var body: some WidgetConfiguration {
-        AppIntentConfiguration(kind: kind, intent: ConfigurationAppIntent.self, provider: Provider()) { entry in
+        AppIntentConfiguration(kind: kind, intent: ChangeFontIntent.self, provider: Provider()) { entry in
             MonthlyWidgetEntryView(entry: entry)
-            //.containerBackground(.gray.gradient, for: .widget)
         }
         .configurationDisplayName("Monthly Style Widget")
         .description("The theme of the widget changes based on month.")
         .supportedFamilies([.systemSmall])
-        .disfavoredLocations([.homeScreen], for: [.systemSmall])
+        //.disfavoredLocations([.homeScreen], for: [.systemSmall])
     }
 }
-
-//struct MonthlyWidgetEntryView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        MonthlyWidgetEntryView(entry: DayEntry(date: dateToDisplay(month: 11, day: 22), configuration: .smiley))
-//            .previewContext(WidgetPreviewContext(family: .systemSmall))
-//    }
-//
-//    static func dateToDisplay(month: Int, day: Int) -> Date {
-//        let components = DateComponents(calendar: Calendar.current,
-//                                        year: 2024,
-//                                        month: month,
-//                                        day: day)
-//        return Calendar.current.date(from: components)!
-//    }
-//}
 
 extension ConfigurationAppIntent {
     fileprivate static var smiley: ConfigurationAppIntent {
@@ -153,11 +136,19 @@ extension Date {
     MockData.dayFour
 }
 
+struct ChangeFontIntent: AppIntent, WidgetConfigurationIntent {
+    static var title: LocalizedStringResource = "Fun Font"
+    static var description: IntentDescription = .init(stringLiteral: "Switch to a fun font")
+    
+    @Parameter(title: "Fun Font", default: false)
+    var funFont: Bool?
+}
+
 struct MockData {
-    static let dayOne = DayEntry(date: dateToDisplay(month: 9, day: 4), configuration: ConfigurationAppIntent())
-    static let dayTwo = DayEntry(date: dateToDisplay(month: 10, day: 5), configuration: ConfigurationAppIntent())
-    static let dayThree = DayEntry(date: dateToDisplay(month: 11, day: 6), configuration: ConfigurationAppIntent())
-    static let dayFour = DayEntry(date: dateToDisplay(month: 12, day: 7), configuration: ConfigurationAppIntent())
+    static let dayOne = DayEntry(date: dateToDisplay(month: 9, day: 4), showFunFont: true)
+    static let dayTwo = DayEntry(date: dateToDisplay(month: 10, day: 5), showFunFont: false)
+    static let dayThree = DayEntry(date: dateToDisplay(month: 11, day: 6), showFunFont: true)
+    static let dayFour = DayEntry(date: dateToDisplay(month: 12, day: 7), showFunFont: false)
     
     
     static func dateToDisplay(month: Int, day: Int) -> Date {

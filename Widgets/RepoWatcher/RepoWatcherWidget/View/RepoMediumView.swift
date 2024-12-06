@@ -86,9 +86,9 @@ struct RepoMediumView: View {
 //}
 
 #Preview(as: .systemMedium) {
-    CompactRepoWidget()
+    DoubleRepoWidget()
 } timeline: {
-    CompactRepoEntry(date: .now, repo: MockData.repoOne, bottomRepo: nil)
+    DoubleRepoEntry(date: .now, topRepo: MockData.repoOne, bottomRepo: MockData.repoTwo)
 }
 
 fileprivate struct StatLabel: View {
