@@ -14,13 +14,6 @@ struct SwiftCalControl: ControlWidget {
     
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: kind) {
-            ControlWidgetToggle(<#T##title: StringProtocol##StringProtocol#>,
-                                isOn: <#T##Bool#>,
-                                action: <#T##SetValueIntent#>,
-                                valueLabel: <#T##(Bool) -> View#>)
-        }
-        
-        StaticControlConfiguration(kind: kind) {
             ControlWidgetToggle("Study Swift",
                                 isOn: Persistence.currentDay?.didStudy ?? false,
                                 action: ControlToggleStudyIntent()) { isOn in
